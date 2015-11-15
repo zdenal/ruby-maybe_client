@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "maybe_client"
-  spec.version = "1.0.0"
+  spec.version = "1.0.1"
   spec.files = ["lib/maybe_client.rb"]
   spec.authors = ["Jan Renra Gloser"]
   spec.email = ["jan.renra.gloser@gmail.com"]
