@@ -1,0 +1,44 @@
+class MaybeClient
+  DELAY = 60
+
+  def initialize(client_class, *connect_params)
+    @connect_params = connect_params
+    @client_class = client_class
+
+    initialize_client
+  end
+
+  # Used to delegate everything to @client
+  def method_missing(method, *args)
+    initialize_client unless @client
+    return if noop?
+
+    result = nil
+
+    begin
+      @fail_at = nil
+      result = @client.send(method, *args)
+    rescue Exception => e
+      handle_exception
+    end
+
+    result
+  end
+
+  private
+  def noop?
+    @fail_at && @fail_at + DELAY > Time.now
+  end
+
+  def handle_exception
+    @fail_at = Time.now
+  end
+
+  def initialize_client
+    begin
+      @client = @client_class.new(*@connect_params)
+    rescue Exception => e
+      handle_exception
+    end
+  end
+end
