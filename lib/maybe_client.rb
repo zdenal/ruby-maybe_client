@@ -10,6 +10,7 @@ class MaybeClient
 
   # Used to delegate everything to @client
   def method_missing(method, *args)
+    return if noop?
     initialize_client unless @client
     return if noop?
 
