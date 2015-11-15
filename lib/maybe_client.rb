@@ -27,7 +27,7 @@ class MaybeClient
       @fail_at = nil
       result = @client.send(method, *args)
     rescue Exception => e
-      handle_exception
+      handle_exception(e)
     end
 
     result
@@ -38,7 +38,7 @@ class MaybeClient
     @fail_at && @fail_at + DELAY > Time.now
   end
 
-  def handle_exception
+  def handle_exception(e)
     @fail_at = Time.now
   end
 
@@ -46,7 +46,7 @@ class MaybeClient
     begin
       @client = @client_class.new(*@connect_params)
     rescue Exception => e
-      handle_exception
+      handle_exception(e)
     end
   end
 end
