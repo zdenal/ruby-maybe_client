@@ -19,3 +19,6 @@ $redis-server --port 6666
 client.ping
 => 'PONG'
 ```
+
+Does not have significant performance overhead. The following is a benchmark of 1000 redis calls to `set`
+![Image of benchmark](https://raw.githubusercontent.com/renra/ruby-maybe_client/master/maybe_client_benchmark_1000.png)
