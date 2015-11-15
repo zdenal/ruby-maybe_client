@@ -15,6 +15,7 @@ Ouch, we forgot to start the server
 
 ```
 $redis-server --port 6666
+# after 1 minute delay since the last fail, maybe client will try again
 client.ping
 => 'PONG'
 ```
