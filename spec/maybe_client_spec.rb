@@ -9,68 +9,85 @@ describe MaybeClient do
 
   let(:maybe_client) { MaybeClient.new(client_class, connect_params) }
 
-  context 'backend is online' do
-    before do
-      allow(client_class).to receive(:new)
-        .with(connect_params)
-        .and_return(client)
-    end
+  describe '#method_missing' do
 
-    it {
-      expect(client).to receive(:foo).with(1, 2, 3).and_return(result)
-      expect(maybe_client.foo(1, 2, 3)).to eql result
-    }
-
-    context 'but backend dies later' do
-      it {
-        expect(client).to receive(:foo).with(1, 2, 3).and_raise(Exception)
-        expect(maybe_client.foo(1, 2, 3)).to eql nil
-      }
-    end
-  end
-
-  context 'backend is offline' do
-    before do
-      allow(client_class).to receive(:new)
-        .with(connect_params)
-        .and_raise(Exception)
-
-      maybe_client
-    end
-
-    it {
-      expect(client).to receive(:foo).never
-      expect(maybe_client.foo(1, 2, 3)).to eql nil
-    }
-
-    context 'but backend comes alive later' do
+    context 'backend is online' do
       before do
         allow(client_class).to receive(:new)
           .with(connect_params)
           .and_return(client)
       end
 
-      context 'before delay runs out' do
+      it {
+        expect(client).to receive(:foo).with(1, 2, 3).and_return(result)
+        expect(maybe_client.foo(1, 2, 3)).to eql result
+      }
+
+      context 'but backend dies later' do
         it {
-          expect(client).to receive(:foo).never
+          expect(client).to receive(:foo).with(1, 2, 3).and_raise(Exception)
           expect(maybe_client.foo(1, 2, 3)).to eql nil
         }
       end
+    end
 
-      context 'after delay runs out' do
+    context 'backend is offline' do
+      before do
+        allow(client_class).to receive(:new)
+          .with(connect_params)
+          .and_raise(Exception)
+
+        maybe_client
+      end
+
+      it {
+        expect(client).to receive(:foo).never
+        expect(maybe_client.foo(1, 2, 3)).to eql nil
+      }
+
+      context 'but backend comes alive later' do
         before do
-          Timecop.travel(Time.now + MaybeClient::DELAY)
+          allow(client_class).to receive(:new)
+            .with(connect_params)
+            .and_return(client)
         end
 
-        after do
-          Timecop.return
+        context 'before delay runs out' do
+          it {
+            expect(client).to receive(:foo).never
+            expect(maybe_client.foo(1, 2, 3)).to eql nil
+          }
         end
 
-        it {
-          expect(client).to receive(:foo).with(1, 2, 3).and_return(result)
-          expect(maybe_client.foo(1, 2, 3)).to eql result
-        }
+        context 'after delay runs out' do
+          before do
+            Timecop.travel(Time.now + MaybeClient::DELAY)
+          end
+
+          after do
+            Timecop.return
+          end
+
+          it {
+            expect(client).to receive(:foo).with(1, 2, 3).and_return(result)
+            expect(maybe_client.foo(1, 2, 3)).to eql result
+          }
+        end
       end
     end
+
+  end
+
+  describe '#respond_to?' do
+    before do
+      allow(client_class).to receive(:new)
+        .with(connect_params)
+        .and_return(client)
+
+      allow(client).to receive(:foo)
+    end
+
+    it { expect(maybe_client.respond_to? :foo).to eql true }
+    it { expect(maybe_client.respond_to? :bar).to eql false }
   end
 end

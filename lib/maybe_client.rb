@@ -8,11 +8,18 @@ class MaybeClient
     initialize_client
   end
 
+  def respond_to? method
+    !!@client && @client.respond_to?(method)
+  end
+
   # Used to delegate everything to @client
-  def method_missing(method, *args)
+  def method_missing(method, *args, &block)
     return if noop?
     initialize_client unless @client
     return if noop?
+
+    # Raises NoMethodError
+    super unless @client.respond_to? method
 
     result = nil
 
