@@ -1,10 +1,6 @@
 class MaybeClient
   DELAY = 60
 
-  def self.from_value(client)
-    new(client)
-  end
-
   def initialize(client: nil, client_class: nil, connect_params: nil)
     raise ArgumentError.new('Either client or client_class has to be supplied') \
       if !client && !client_class
