@@ -22,3 +22,5 @@ client.ping
 
 Does not have significant performance overhead. The following is a benchmark of 1000 redis calls to `set`
 ![Image of benchmark](https://raw.githubusercontent.com/renra/ruby-maybe_client/master/maybe_client_benchmark_1000.png)
+
+[![wercker status](https://app.wercker.com/status/6fae9d612ce512dbdfff1146042d65fc/m "wercker status")](https://app.wercker.com/project/bykey/6fae9d612ce512dbdfff1146042d65fc)
