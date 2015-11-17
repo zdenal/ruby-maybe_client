@@ -2,7 +2,7 @@
 
 #Maybe Client
 
-Wrapper for connection clients that handles outages without raising errors (which wood take the application down). Ideal for making the application resilient in case of 3rd party failures (think your redis cache instance goes down)
+Wrapper for connection clients that handles outages without raising errors (which would take the application down). Ideal for making the application resilient in case of 3rd party failures (think your redis cache instance goes down)
 
 ##How to use
 
