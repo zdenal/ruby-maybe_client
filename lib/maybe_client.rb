@@ -56,7 +56,7 @@ class MaybeClient
 
   def initialize_client
     begin
-      @client = @client_class.new(*@connect_params)
+      @client = @client_class.new(@connect_params)
     rescue Exception => e
       handle_exception(e)
     end
