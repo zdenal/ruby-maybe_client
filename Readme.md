@@ -28,7 +28,7 @@ You'll probably want to handle errors in a way specific to your application. You
 ```ruby
 class MaybeClient
   def exception_handler
-    Rails.log.error('Bad things happened')
+    Rails.logger.error('Bad things happened')
   end
 end
 ```
