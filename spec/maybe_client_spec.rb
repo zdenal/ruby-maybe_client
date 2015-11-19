@@ -27,8 +27,11 @@ describe MaybeClient do
 
         context 'but backend dies later' do
           it {
+            allow(maybe_client).to receive(:exception_handler)
             expect(client).to receive(:foo).with(1, 2, 3).and_raise(Exception)
+
             expect(maybe_client.foo(1, 2, 3)).to eql nil
+            expect(maybe_client).to have_received(:exception_handler).once
           }
         end
       end
@@ -95,8 +98,11 @@ describe MaybeClient do
 
         context 'but backend dies later' do
           it {
+            allow(maybe_client).to receive(:exception_handler)
             expect(client).to receive(:foo).with(1, 2, 3).and_raise(Exception)
+
             expect(maybe_client.foo(1, 2, 3)).to eql nil
+            expect(maybe_client).to have_received(:exception_handler).once
           }
         end
       end

@@ -42,16 +42,12 @@ class MaybeClient
     @fail_at && @fail_at + DELAY > Time.now
   end
 
+  def exception_handler(e)
+  end
+
   def handle_exception(e)
     @fail_at = Time.now
-    return unless defined? Rails
-
-    # TODO: Ehem, could be done better, improve in the future
-    Rails.logger.error(
-      short_message: e.message,
-      env: Rails.env,
-      backtrace: e.backtrace.first(3)
-    )
+    exception_handler(e)
   end
 
   def initialize_client

@@ -22,5 +22,16 @@ client.ping
 => 'PONG'
 ```
 
+##Error handling
+You'll probably want to handle errors in a way specific to your application. You can do that by overriding the `exception_handler` method
+
+```ruby
+class MaybeClient
+  def exception_handler
+    Rails.log.error('Bad things happened')
+  end
+end
+```
+
 Does not have significant performance overhead. The following is a benchmark of 1000 redis calls to `set`
 ![Image of benchmark](https://raw.githubusercontent.com/renra/ruby-maybe_client/master/maybe_client_benchmark_1000.png)
