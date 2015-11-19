@@ -2,14 +2,12 @@ class MaybeClient
   DELAY = 60
 
   def initialize(client: nil, client_class: nil, connect_params: nil)
-    raise ArgumentError.new('Either client or client_class has to be supplied') \
-      if !client && !client_class
-
     @client = client
     @connect_params = connect_params
     @client_class = client_class
+    @should_initialize = !!@client_class
 
-    initialize_client unless @client
+    initialize_client if client_initialization_needed?
   end
 
   def respond_to? method
@@ -19,8 +17,8 @@ class MaybeClient
   # Used to delegate everything to @client
   def method_missing(method, *args, &block)
     return if noop?
-    initialize_client unless @client
-    return if noop?
+    initialize_client if client_initialization_needed?
+    return if in_delay?
 
     # Raises NoMethodError
     super unless @client.respond_to? method
@@ -39,6 +37,14 @@ class MaybeClient
 
   private
   def noop?
+    no_client? || in_delay?
+  end
+
+  def no_client?
+    !@client && !@should_initialize
+  end
+
+  def in_delay?
     @fail_at && @fail_at + DELAY > Time.now
   end
 
@@ -48,6 +54,10 @@ class MaybeClient
   def handle_exception(e)
     @fail_at = Time.now
     exception_handler(e)
+  end
+
+  def client_initialization_needed?
+    !@client && @should_initialize
   end
 
   def initialize_client

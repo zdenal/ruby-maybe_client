@@ -90,6 +90,16 @@ describe MaybeClient do
 
     describe '#method_missing' do
 
+      context 'client is nil' do
+        let(:client) { nil }
+
+        it {
+          expect(maybe_client).to receive(:handle_exception).never
+          expect(maybe_client.foo(1, 2, 3)).to eql nil
+        }
+      end
+
+
       context 'backend is online' do
         it {
           expect(client).to receive(:foo).with(1, 2, 3).and_return(result)
